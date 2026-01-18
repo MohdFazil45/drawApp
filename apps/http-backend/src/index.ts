@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {middleware} from "./authMiddleware"
 import { SECRET_TOKEN } from "@repo/backendcommon/secret";
+import {CreateUserSchema, CreateRoomSchema, SigninSchema} from "@repo/common/types"
 const app = express();
 const PORT = 4000;
 
@@ -11,7 +12,6 @@ app.listen(PORT, () => console.log(`Server is running on ${PORT}`));
 app.use(express.json());
 
 interface User {
-  id: number;
   email: string;
   name: string;
   password: string;
@@ -21,7 +21,17 @@ const USERS: Array<User> = [];
 
 app.post("/api/v1/signup", async (req, res) => {
   try {
-    const { email, name, password } = req.body;
+    const parseData = CreateUserSchema.safeParse(req.body)
+
+    if (!parseData.success) {
+      return res.status(400).json({
+          error:"Incorrect inputs"
+      })
+    }
+
+    const email = parseData.data.email
+    const password = parseData.data.password
+    const name = parseData.data.name
 
     const userAlreadyExists = USERS.find((user) => user.email === email);
 
@@ -34,13 +44,12 @@ app.post("/api/v1/signup", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     USERS.push({
-      id:Math.floor(Math.random() * 10),
       email,
       name,
       password: hashedPassword,
     });
 
-    res.status(200).json({
+    res.status(201).json({
       USERS,
     });
   } catch (error) {
@@ -50,7 +59,18 @@ app.post("/api/v1/signup", async (req, res) => {
 
 app.post("/api/v1/signin", async (req, res) => {
   try {
-    const { email, name, password } = req.body;
+
+    const siginData = SigninSchema.safeParse(req.body);
+
+    if (!siginData.success) {
+      return res.status(402).json({
+        error:"Incorrect input"
+      })
+    }
+
+    const email = siginData.data.email
+    const password = siginData.data.password
+
     const checkUser = USERS.find((user) => user.email === email);
 
     if (!checkUser) {
@@ -72,7 +92,7 @@ app.post("/api/v1/signin", async (req, res) => {
     if (hashedPassword) {
       const token = jwt.sign(
         {
-          id: response.id,
+          name: response.name,
         },
         SECRET_TOKEN,
       );

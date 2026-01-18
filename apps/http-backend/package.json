@@ -17,6 +17,7 @@
     "jsonwebtoken": "^9.0.3"
   },
   "devDependencies": {
+    "@repo/common":"workspace:*",
     "@repo/backendcommon":"workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/bcrypt": "^6.0.0",

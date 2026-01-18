@@ -33,6 +33,9 @@ importers:
       '@repo/backendcommon':
         specifier: workspace:*
         version: link:../../packages/backendCommon
+      '@repo/common':
+        specifier: workspace:*
+        version: link:../../packages/common
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
