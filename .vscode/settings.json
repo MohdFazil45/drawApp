@@ -3,5 +3,7 @@
     {
       "mode": "auto"
     }
-  ]
+  ],
+  "prisma.pinToPrisma6": false
 }
+
