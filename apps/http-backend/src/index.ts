@@ -12,7 +12,6 @@ import { prisma } from "@repo/db/client";
 const app = express();
 const PORT = 4000;
 
-app.listen(PORT, () => console.log(`Server is running on ${PORT}`));
 app.use(express.json());
 
 app.post("/api/v1/signup", async (req, res) => {
@@ -166,3 +165,20 @@ app.get("/api/v1/chats/:roomId", async (req, res) => {
     })
   }
 });
+
+
+app.get("/api/v1/room/:slug",async (req,res)=>{
+  const slug = req.params.slug
+  const room = await prisma.room.findFirst({
+    where:{
+      //@ts-ignore
+      slug:slug
+    }
+  })
+
+  res.status(201).json({
+    room
+  })
+})
+
+app.listen(PORT, () => console.log(`Server is running on ${PORT}`));
