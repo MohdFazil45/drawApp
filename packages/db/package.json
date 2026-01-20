@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "exports":{
-    "./client":"./src/index.ts"
+    "./client":"./dist/index.js"
   },
   "scripts": {
     "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev --skip-generate",
+    "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "build":"tsc -b"
   },

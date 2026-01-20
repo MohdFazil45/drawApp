@@ -5,11 +5,6 @@
     "outDir": "dist",
     "declaration": true
   },
-  "include": ["src"],
-  "exclude": [
-    "dist",
-    "generated",
-    "prisma",
-    "node_modules"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["src/generated", "prisma", "dist", "node_modules"]
 }

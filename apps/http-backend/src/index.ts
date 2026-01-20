@@ -52,6 +52,7 @@ app.post("/api/v1/signup", async (req, res) => {
 
     res.status(201).json({
       message: "SignUp successfully",
+      userId: response.id,
     });
   } catch (error) {
     console.log(error);
@@ -94,7 +95,7 @@ app.post("/api/v1/signin", async (req, res) => {
     if (hashedPassword) {
       const token = jwt.sign(
         {
-          name: checkUser.name,
+          userId: checkUser.id,
         },
         SECRET_TOKEN,
       );
@@ -112,9 +113,56 @@ app.post("/api/v1/signin", async (req, res) => {
 });
 
 app.post("/api/v1/create-room", middleware, async (req, res) => {
-  res.json({
-    roomid: Math.floor(Math.random() * 10000),
-  });
+  try {
+    const parseData = CreateRoomSchema.safeParse(req.body);
+
+    if (!parseData.success) {
+      return res.status(402).json({
+        error: "Incorrect inputs",
+      });
+    }
+    //@ts-ignore
+    const userId = req.userId;
+    try {
+      const room = await prisma.room.create({
+      data:{
+        slug:parseData.data.slug,
+        adminId:userId
+      }
+    })
+
+    res.status(201).json({
+      roomId :room.id
+    })
+    } catch (error) {
+      return res.status(401).json({
+        error:"Slug already used"
+      })
+    }
+  } catch (error) {
+    console.log(error)
+  }
 });
 
-app.get("/api/v1/rooms", async (req, res) => {});
+app.get("/api/v1/chats/:roomId", async (req, res) => {
+  try {
+    const roomId = Number(req.params["roomId"])
+    const messages = await prisma.chat.findMany({
+      where:{
+        roomId:roomId
+      },
+      orderBy:{
+        id:"desc"
+      },
+      take: 50
+    })
+    res.status(200).json({
+      messages
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      error: "Failed to fetch messages"
+    })
+  }
+});
