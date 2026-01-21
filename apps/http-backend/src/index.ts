@@ -51,7 +51,6 @@ app.post("/api/v1/signup", async (req, res) => {
 
     res.status(201).json({
       message: "SignUp successfully",
-      userId: response.id,
     });
   } catch (error) {
     console.log(error);
@@ -156,7 +155,7 @@ app.get("/api/v1/chats/:roomId", async (req, res) => {
       take: 50
     })
     res.status(200).json({
-      messages
+      messages:messages
     })
   } catch (error) {
     console.log(error)

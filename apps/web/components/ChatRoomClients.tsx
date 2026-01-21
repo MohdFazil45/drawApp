@@ -3,39 +3,49 @@ import { useEffect, useState } from "react";
 import { useSocket } from "../hooks/useHooks";
 
 export function ChatRoomClient({
-  messages,
+  message,
   id,
 }: {
-  messages: { messages: string }[];
+  message: { message: string }[];
   id: string;
 }) {
-  const [chats, setChats] = useState(messages);
-  const [currentmessages, setCurrentmessages] = useState("");
+  const [chats, setChats] = useState(message);
+  const [currentmessage, setCurrentmessage] = useState("");
   const { socket, loading } = useSocket();
-
   useEffect(() => {
     if (socket && !loading) {
-
       socket.send(
         JSON.stringify({
           type: "join_room",
           roomId: id,
-        }));
+        }),
+      );
 
       socket.onmessage = (event) => {
         const parsedData = JSON.parse(event.data);
         if (parsedData.type === "chat") {
-          setChats(c => [...c, { messages: parsedData.messages }]);
+          setChats((c) => [ { message: parsedData.message }, ...c]);
         }
       };
     }
   }, [socket, loading, id]);
 
+
   return (
-    <div>
-      {chats.map((m, index) => 
-        <div key={index}>{m.messages}</div>
-      )}
+    <>
+    <div
+      style={{
+        display: "flex",
+        flexDirection:"column",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
+        width: "100vw",
+        gap: "4px",
+      }}
+    >
+      
+
       <input
         style={{
           paddingTop: "4px",
@@ -43,9 +53,9 @@ export function ChatRoomClient({
           paddingLeft: "4px",
         }}
         type="text"
-        value={currentmessages}
+        value={currentmessage}
         onChange={(e) => {
-          setCurrentmessages(e.target.value);
+          setCurrentmessage(e.target.value);
         }}
       />
       <button
@@ -60,15 +70,20 @@ export function ChatRoomClient({
             JSON.stringify({
               type: "chat",
               roomId: id,
-              message: currentmessages,
+              message: currentmessage,
             }),
           );
 
-          setCurrentmessages("");
+          setCurrentmessage("");
         }}
       >
-        Send messagess
+        Send messages
       </button>
+     
     </div>
+    <div> {chats.map((m, index) => (
+        <div key={index}>{m.message}</div>
+      ))}</div>
+      </>
   );
 }
