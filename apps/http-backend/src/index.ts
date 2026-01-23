@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { middleware } from "./authMiddleware.js";
 import { SECRET_TOKEN } from "@repo/backendcommon/secret";
+import cors from "cors"
 import {
   CreateUserSchema,
   CreateRoomSchema,
@@ -11,6 +12,7 @@ import {
 import { prisma } from "@repo/db/client";
 const app = express();
 const PORT = 4000;
+app.use(cors())
 
 app.use(express.json());
 
