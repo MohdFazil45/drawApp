@@ -20,7 +20,7 @@ export const Button = ({
     "transition-all duration-300 flex items-center justify-center cursor-pointer rounded-md text-shadow-xs/25 text-shadow-lg";
   const varientStyle = {
     primary: "text-cyan-500/80  border-cyan-500/80 border-1 hover:bg-accent shadow-xl/20 hover:bg-neutral-700 font-medium hover:text-cyan-700 hover:border-cyan-600  hover:scale-[1.02]",
-    secondary: "bg-cyan-500 border-cyan-500  text-white font-bold hover:bg-cyan-500/70 shadow-lg shadow-cyan-500/60  hover:scale-[1.02] inline-flex ",
+    secondary: "bg-cyan-500 border-cyan-500  text-white font-bold hover:bg-cyan-500/70 shadow-lg shadow-cyan-500/30  hover:scale-[1.02] inline-flex ",
   };
   const sizeStyles = {
     sm: "py-2 px-5 text-sm ",
