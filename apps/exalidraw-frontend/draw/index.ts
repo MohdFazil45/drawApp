@@ -12,7 +12,7 @@ type Shape =
       type: "circle";
       centerX: number;
       centerY: number;
-      radius: number;
+      center: number;
     };
 
 export default async function initDraw(
@@ -54,22 +54,24 @@ export default async function initDraw(
     clicked = false;
     const width = e.clientX - startX;
     const height = e.clientY - startY;
-    const shape:Shape = {
+    const shape: Shape = {
       type: "rect",
       x: startX,
       y: startY,
       height,
       width,
-    }
+    };
     existingShapes.push(shape);
 
-    socket.send(JSON.stringify({
-      type:"chat",
-      message:JSON.stringify({
-        shape
+    socket.send(
+      JSON.stringify({
+        type: "chat",
+        message: JSON.stringify({
+          shape,
+        }),
+        roomId,
       }),
-      roomId
-    }))
+    );
   });
 
   Canvas.addEventListener("mousemove", (e) => {
@@ -78,7 +80,18 @@ export default async function initDraw(
       const height = e.clientY - startY;
       clearCanvas(existingShapes, Canvas, ctx);
       ctx.strokeStyle = "rgba(255, 255, 255";
-      ctx.strokeRect(startX, startY, width, height);
+      //@ts-ignore
+      const isActiveTool = window.isActiveTool;
+      if (isActiveTool === "rectangle") {
+        ctx.strokeRect(startX, startY, width, height);
+      } else if(isActiveTool === "circle") {
+        const centerX = startX + width / 2
+        const centerY = startY + height / 2
+        const radius = Math.max(width, height) / 2
+        ctx.arc(centerX, centerX , radius, 0, Math.PI * 2)
+        ctx.stroke()
+
+      }
     }
   });
 }

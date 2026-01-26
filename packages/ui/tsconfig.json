@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "dist"
   },
-  "include": ["src"],
+  "include": ["src", "../../apps/exalidraw-frontend/components/button.tsx"],
   "exclude": ["node_modules", "dist"]
 }
+
