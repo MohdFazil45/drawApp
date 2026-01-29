@@ -1,14 +1,11 @@
 import LandingPage from "@/pages/LandingPage";
-import { cn } from "@/lib/utils"; 
 
 export default function Home() {
   return (
-    <div 
-      className="min-h-screen w-screen bg-black p-2 bg-linear-to-b from-cyan-500/10 via-transparent to-cyan-500/10 "
-      style={{
-        backgroundImage: "radial-gradient(#111111 0.8px, transparent 1px)",
-        backgroundSize: "10px 10px"
-      }}
+    <div
+      className="
+        min-h-screen w-screen p-2 bg-white dark:bg-black bg-[radial-gradient(#D3D3D3_1px,transparent_1px)] dark:bg-[radial-gradient(#ffffff20_1px,transparent_1px)] bg-size-[10px_10px]
+      "
     >
       <LandingPage />
     </div>

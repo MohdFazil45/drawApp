@@ -1,16 +1,14 @@
-import AuthPage from "@/components/AuthPage";
+import { FormSignin } from "@/components/SigninForm";
 
 export default function Signin() {
   return (
     <div className="overflow-hidden">
       <div
-        className="h-screen w-screen bg-black "
-        style={{
-          backgroundImage: "radial-gradient(#111111 0.8px, transparent 1px)",
-          backgroundSize: "10px 10px",
-        }}
+        className="
+        min-h-screen w-screen bg-white dark:bg-black bg-[radial-gradient(#D3D3D3_1px,transparent_1px)] dark:bg-[radial-gradient(#ffffff20_1px,transparent_1px)] bg-size-[10px_10px]
+      "
       >
-        <AuthPage isSign={true} />
+        <FormSignin/>
       </div>
     </div>
   );

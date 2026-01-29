@@ -167,9 +167,9 @@ app.get("/api/v1/chats/:roomId", async (req, res) => {
   }
 });
 
-
 app.get("/api/v1/room/:slug",async (req,res)=>{
-  const slug = req.params.slug
+ try {
+   const slug = req.params.slug
   const room = await prisma.room.findFirst({
     where:{
       //@ts-ignore
@@ -178,8 +178,12 @@ app.get("/api/v1/room/:slug",async (req,res)=>{
   })
 
   res.status(201).json({
-    room
+    roomId:room?.id
   })
+ } catch (error) {
+  console.log(error)
+ }
 })
 
 app.listen(PORT, () => console.log(`Server is running on ${PORT}`));
+  

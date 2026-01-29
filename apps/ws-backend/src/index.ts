@@ -65,7 +65,7 @@ wss.on("connection",function connection(ws, request) {
       const user = users.find((x) => x.ws === ws);
       user?.rooms.push(Number(parsedData.roomId));
     }
-    console.log(parsedData)
+
     if (parsedData.type === "leave_room") {
       const user = users.find((x) => x.ws === ws);
       console.log(parsedData)
@@ -75,12 +75,9 @@ wss.on("connection",function connection(ws, request) {
       user.rooms = user.rooms.filter((x) => x !== parsedData.room);
     }
 
-    console.log("Message received")
-    console.log(parsedData)
     if (parsedData.type === "chat") {
       const roomId = Number(parsedData.roomId);
       const message = parsedData.message;
-    console.log("chat" +parsedData)
     
      try {
        await prisma.chat.create({

@@ -7,6 +7,7 @@ interface ButtonProps {
   variant: "primary" | "secondary";
   onClick?: () => void;
   size: "sm" | "lg";
+  type?:"submit" | "reset" | "button" | undefined
 }
 
 export const Button = ({
@@ -15,11 +16,12 @@ export const Button = ({
   variant,
   onClick,
   size,
+  type
 }: ButtonProps) => {
   const baseStyles =
-    "transition-all duration-300 flex items-center justify-center cursor-pointer rounded-md text-shadow-xs/25 text-shadow-lg";
+    "transition-all duration-300 flex items-center justify-center cursor-pointer rounded-md dark:text-shadow-xs/25 text-shadow-lg";
   const varientStyle = {
-    primary: "text-cyan-500/80  border-cyan-500/80 border-1 hover:bg-accent shadow-xl/20 hover:bg-neutral-700 font-medium hover:text-cyan-700 hover:border-cyan-600  hover:scale-[1.02]",
+    primary: "text-cyan-500/80  border-cyan-500/80 border-1 hover:bg-neutral-50/10 shadow-xl/20 font-medium hover:text-cyan-700 hover:border-cyan-600  hover:scale-[1.02]",
     secondary: "bg-cyan-500 border-cyan-500  text-white font-bold hover:bg-cyan-500/70 shadow-lg shadow-cyan-500/30  hover:scale-[1.02] inline-flex ",
   };
   const sizeStyles = {
@@ -33,6 +35,7 @@ export const Button = ({
         className,
       )}
       onClick={onClick}
+      type={type}
     >
       {children}
     </button>
