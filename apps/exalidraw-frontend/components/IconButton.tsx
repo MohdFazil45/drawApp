@@ -6,7 +6,7 @@ export function IconButton({
     onClick
 }:{
     icon:ReactNode,
-    activated:boolean,
+    activated?:boolean,
     onClick:()=>void
 }){
     return <div className={`pointer rounded-md border-2 border-white p-2 bg-neutral-700 hover:bg-neutral-500 ${activated ? "text-green-600" : "text-white"}`} onClick={onClick}>

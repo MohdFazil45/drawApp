@@ -1,10 +1,19 @@
-import initDraw from "@/draw";
+import * as htmlToImage from "html-to-image";
+import { toPng, toJpeg, toSvg } from "html-to-image";
 import { useEffect, useRef, useState } from "react";
 import { IconButton } from "./IconButton";
-import { Circle, Pencil, RectangleHorizontal } from "lucide-react";
+import {
+  Circle,
+  LineSquiggleIcon,
+  MousePointer,
+  Pencil,
+  RectangleHorizontal,
+  Text,
+} from "lucide-react";
 import { Game } from "@/draw/Game";
+import { Side } from "./SideBar";
 
-export type ToolShape = "circle" | "rect" | "pencil";
+export type ToolShape = "mouse" | "circle" | "rect" | "pencil" | "curveline";
 
 export function Canvas({
   roomId,
@@ -14,21 +23,38 @@ export function Canvas({
   socket: WebSocket;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const sidebarRef = useRef<HTMLDivElement>(null);
   const [game, setGame] = useState<Game>();
   const [isActiveTool, setIsActiveTool] = useState<ToolShape>("pencil");
+
+  function showSideBar() {
+    sidebarRef.current?.classList.toggle("flex");
+    sidebarRef.current?.classList.toggle("hidden");
+  }
+
+  async function exportCanvas() {
+    if (!canvasRef.current) {
+      return;
+    }
+    const dataUrl = await htmlToImage.toPng(canvasRef.current);
+    const link = document.createElement("a");
+    link.href = dataUrl;
+    link.download = "diagram.png";
+    link.click();
+  }
 
   useEffect(() => {
     game?.setTool(isActiveTool);
   }, [isActiveTool, game]);
-  
+
   useEffect(() => {
     if (canvasRef.current) {
       const g = new Game(canvasRef.current, roomId, socket);
       setGame(g);
 
-      return () =>{
-        g.destroy()
-      }
+      return () => {
+        g.destroy();
+      };
     }
   }, [canvasRef]);
 
@@ -37,9 +63,19 @@ export function Canvas({
       <canvas
         ref={canvasRef}
         height={window.innerHeight}
-        width={innerWidth}
+        width={window.innerWidth}
       ></canvas>
       <TopBar isActiveTool={isActiveTool} setIsActiveTool={setIsActiveTool} />
+      <div className="absolute top-3 right-5">
+        <Text
+          className="fixed z-100 right-5 top-3 cursor-pointer"
+          onClick={showSideBar}
+          size={"30px"}
+        />
+      </div>
+      <div ref={sidebarRef} className="hidden">
+        {<Side onClick={exportCanvas} className="" />}
+      </div>
     </div>
   );
 }
@@ -52,7 +88,21 @@ function TopBar({
   setIsActiveTool: (s: ToolShape) => void;
 }) {
   return (
-    <div className="fixed top-5 left-40 flex gap-2  ">
+    <div className="fixed top-3 left-140 flex gap-2 border px-4 py-2 rounded-lg ">
+      <IconButton
+        activated={isActiveTool === "mouse"}
+        icon={<MousePointer />}
+        onClick={() => {
+          setIsActiveTool("mouse");
+        }}
+      />
+      <IconButton
+        activated={isActiveTool === "curveline"}
+        icon={<LineSquiggleIcon />}
+        onClick={() => {
+          setIsActiveTool("curveline");
+        }}
+      />
       <IconButton
         activated={isActiveTool === "pencil"}
         icon={<Pencil />}

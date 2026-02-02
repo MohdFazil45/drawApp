@@ -207,7 +207,7 @@ export default function LandingPage() {
                     </form.Field>
                     <form.Field name="joinSlug">
                       {(field) => (
-                        <div className="flex gap-4">
+                        <div className="flex items-center justify-center  gap-4">
                           <Input
                             type="text"
                             placeholder="Paste room code"
