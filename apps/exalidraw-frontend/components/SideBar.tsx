@@ -28,7 +28,7 @@ export function Side({ className, onClick }: SideBar) {
         </div>
         <div
           className="absolute bottom-10 flex items-center justify-center gap-36 border p-1 rounded cursor-pointer"
-          onClick={()=>route.push("/")}
+          onClick={()=>route.push("/rooms")}
         >
           <div className="text-xl">Exit</div>
           <div>
