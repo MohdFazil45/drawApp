@@ -14,7 +14,7 @@ export default function FieldInfo({
     typeof error === "string" ? error : error?.message || JSON.stringify(error);
   return (
     <>
-      {isTouched && errors.length ? (
+      {isTouched && errors.length ? ( 
         <p className="text-red-400 text-sm mt-1">{errorMessage}</p>
       ) : null}
     </>

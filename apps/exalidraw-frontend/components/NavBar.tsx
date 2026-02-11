@@ -17,6 +17,7 @@ export default function NavBar() {
   });
   const handleLogout = async () => {
     localStorage.removeItem("token");
+    route.push("/")
   };
 
   const showLogout = ()=>{

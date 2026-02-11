@@ -1,24 +1,16 @@
 "use client";
 import { Button } from "@/components/ButtonComponent";
 import { Card } from "@/components/CardComponent";
-import Input from "@/components/InputComponent";
 import NavBar from "@/components/NavBar";
-import { useForm } from "@tanstack/react-form";
-import { Copy, Download, Shapes, User, ZoomIn } from "lucide-react";
+import { Download, Palette, Shapes, User, ZoomIn } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getRoomId } from "@/lib/roomid";
-import axios from "axios";
-import { z } from "zod";
-const RoomSchema = z.object({
-  createSlug: z.string(),
-  joinSlug: z.string(),
-});
+
+
 
 export default function LandingPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isRoomCreated, setIsRoomCreate] = useState(false);
-  const [roomCode, setRoomCode] = useState("");
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -27,73 +19,6 @@ export default function LandingPage() {
     }
   }, []);
 
-  const form = useForm({
-    defaultValues: {
-      createSlug: "",
-      joinSlug: "",
-    },
-    validators: { onChange: RoomSchema },
-    onSubmit: async ({ value }) => {
-      console.log(value.createSlug);
-      try {
-        const token = localStorage.getItem("token");
-        console.log(value.joinSlug);
-        const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_HTTP_BACKEND_URL}/create-room`,
-          {
-            slug: value.createSlug,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-        setIsRoomCreate(true);
-        setRoomCode(value.createSlug);
-        console.log("success");
-      } catch (error) {
-        console.log(error);
-      }
-    },
-  });
-
-  const enterRoom = async (slug: string) => {
-    console.log(slug);
-    const roomId = await getRoomId(slug);
-    console.log(roomId);
-    route.push(`/canvas/${roomId}`);
-  };
-
-  const copyCode = async () => {
-    await navigator.clipboard.writeText(roomCode);
-    alert("Code copy successfully");
-  };
-
-  function createRandomSet() {
-    const all =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-={}[]|:;<>,.?/~`";
-
-    return {
-      chars: all
-        .split("")
-        .sort(() => Math.random() - 0.5)
-        .join(""),
-    };
-  }
-  const randomSet = createRandomSet();
-
-  function generateRandomCode(length = 8) {
-    const chars = randomSet.chars;
-    let code = "";
-
-    for (let i = 0; i < length; i++) {
-      code += chars[Math.floor(Math.random() * chars.length)];
-    }
-    navigator.clipboard.writeText(code);
-    alert("Code copy successfully");
-    return code;
-  }
 
   const route = useRouter();
   const features = [
@@ -110,10 +35,10 @@ export default function LandingPage() {
     },
 
     {
-      icon: <ZoomIn />,
-      title: "Infinite Canvas",
+      icon: <Palette />,
+      title: "Modern Minimal UI",
       description:
-        "Never run out of space. Zoom, pan, and explore your ideas without limits.",
+        "Beautiful interface with light & dark themes for distraction-free work.",
     },
     {
       icon: <Download />,
@@ -149,89 +74,7 @@ export default function LandingPage() {
         </div>
         <div>
           {isLoggedIn ? (
-            <div className="flex gap-4 items-center justify-center">
-              {isRoomCreated ? (
-                <div className="flex gap-4 items-center justify-center">
-                  <div className="flex items-center gap-8 justify-around dark:text-neutral-300 text-neutral-200 dark:bg-neutral-600 bg-neutral-800 px-8  py-1 rounded">
-                    {roomCode}
-                    <div onClick={copyCode} className="cursor-pointer">
-                      <Copy size={"16px"} />
-                    </div>
-                  </div>
-                  <div>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      children={"Enter Canvas Room"}
-                      onClick={() => enterRoom(roomCode)}
-                    />
-                  </div>
-                </div>
-              ) : (
-                <div className=" flex flex-col items-center justify-center">
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      form.handleSubmit();
-                    }}
-                  >
-                    <form.Field name="createSlug">
-                      {(field) => (
-                        <div className="flex gap-4">
-                          <Input
-                            disabled
-                            className="disabled:cursor-not-allowed"
-                            type="text"
-                            placeholder="Create room code"
-                            value={field.state.value}
-                            onChange={field.handleChange}
-                          />
-
-                          <div className="flex gap-4 items-center justify-center">
-                            <Button
-                              children={"Generate room code"}
-                              size="sm"
-                              variant="secondary"
-                              type="button"
-                              onClick={() => {
-                                const code = generateRandomCode();
-                                field.handleChange(code);
-                              }}
-                            ></Button>
-                            <Button size="sm" variant="secondary" type="submit">
-                              Create Room
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-                    </form.Field>
-                    <form.Field name="joinSlug">
-                      {(field) => (
-                        <div className="flex items-center justify-center  gap-4">
-                          <Input
-                            type="text"
-                            placeholder="Paste room code"
-                            value={field.state.value}
-                            onChange={field.handleChange}
-                          />
-
-                          <div className="flex gap-4 items-center justify-center">
-                            <Button
-                              size="sm"
-                              variant="secondary"
-                              type="button"
-                              onClick={() => enterRoom(field.state.value)}
-                            >
-                              Join Room
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-                    </form.Field>
-                  </form>
-                </div>
-              )}
-            </div>
+            <Button variant="secondary" size="lg" className="mt-5" children={"Create or Join room"} onClick={()=> route.push("/rooms")}/>
           ) : (
             <Button
               variant="secondary"
