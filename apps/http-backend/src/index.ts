@@ -193,15 +193,12 @@ app.delete("/api/v1/undo/:roomId", middleware, async (req, res) => {
   try {
     //@ts-ignore
     const userId = req.userId;
-    console.log("here");
     const roomId = Number(req.params["roomId"]);
-    console.log(roomId);
     if (!roomId) {
       return res.status(404).json({
         error: "RoomId doesn't exist",
       });
     }
-    console.log("first");
     const lastChat = await prisma.chat.findFirst({
       where: {
         roomId: roomId,
@@ -234,9 +231,6 @@ app.delete("/api/v1/undo/:roomId", middleware, async (req, res) => {
 
 app.get("/api/v1/chats/:roomId", async (req, res) => {
   try {
-    console.log("params:", req.params);
-    console.log("roomId raw:", req.params.roomId);
-
     const roomId = Number(req.params["roomId"]);
     const messages = await prisma.chat.findMany({
       where: {

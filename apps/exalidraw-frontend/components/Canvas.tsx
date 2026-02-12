@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import * as htmlToImage from "html-to-image";
 import { useEffect, useRef, useState } from "react";
 import { IconButton } from "./IconButton";
@@ -35,7 +35,7 @@ export function Canvas({
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [game, setGame] = useState<Game>();
   const [showsideButton, setShowsideButton] = useState(true);
-  const [isActiveTool, setIsActiveTool] = useState<ToolShape>("pencil");
+  const [isActiveTool, setIsActiveTool] = useState<ToolShape>("mouse");
 
   function showSideBar() {
     sidebarRef.current?.classList.toggle("flex");
@@ -58,16 +58,22 @@ export function Canvas({
     game?.setTool(isActiveTool);
   }, [isActiveTool, game]);
 
-  useEffect(() => {
-    if (canvasRef.current) {
-      const g = new Game(canvasRef.current, roomId, socket);
-      setGame(g);
+  const gameRef = useRef<Game | null>(null);
 
-      return () => {
-        g.destroy();
-      };
-    }
-  }, [canvasRef]);
+useEffect(() => {
+  if (!canvasRef.current) return;
+  if (gameRef.current) return;
+
+  const g = new Game(canvasRef.current, roomId, socket);
+  gameRef.current = g;
+  setGame(g);
+
+  return () => {
+    g.destroy();
+    gameRef.current = null;
+  };
+}, [roomId, socket]);
+
 
   return (
     <div className="h-screen overflow-hidden">
@@ -108,16 +114,19 @@ function TopBar({
   isActiveTool,
   setIsActiveTool,
   roomId,
-  game
+  game,
 }: {
   isActiveTool: ToolShape;
   setIsActiveTool: (s: ToolShape) => void;
   roomId: number;
-  game?:Game
+  game?: Game;
 }) {
   const token = localStorage.getItem("token");
   const undoMessage = async () => {
     try {
+      if (game) {
+        game.undoLastShape();
+      }
       const response = await axios.delete(
         `${process.env.NEXT_PUBLIC_HTTP_BACKEND_URL}/undo/${roomId}`,
         {
@@ -127,7 +136,6 @@ function TopBar({
         },
       );
       if (response.status === 200 && game) {
-        game.undoLastShape()
       }
     } catch (error) {}
   };
@@ -171,7 +179,7 @@ function TopBar({
       />
       <IconButton
         activated={isActiveTool === "undo"}
-        icon={<Undo className="cursor-pointer"/>}
+        icon={<Undo className="cursor-pointer" />}
         onClick={undoMessage}
       />
     </div>

@@ -19,13 +19,13 @@ type Shape =
       type: "pencil";
       points: { x: number; y: number }[];
     }
-    |{
-      type:"arrowPoint";
-      startX:number
-      startY:number
-      endX:number
-      endY:number
-    }
+  | {
+      type: "arrowPoint";
+      startX: number;
+      startY: number;
+      endX: number;
+      endY: number;
+    };
 
 interface Point {
   x: number;
@@ -41,10 +41,12 @@ export class Game {
   private clicked: boolean;
   private startX: number = 0;
   private startY: number = 0;
+  private clientId: string;
   private isActiveTool: ToolShape = "rect";
-  private points: Point[];;
+  private points: Point[];
 
   constructor(canvas: HTMLCanvasElement, roomId: number, socket: WebSocket) {
+    console.log("Game created");
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d")!;
     this.existingShapes = [];
@@ -52,6 +54,7 @@ export class Game {
     this.socket = socket;
     this.clicked = false;
     this.points = [];
+    this.clientId = crypto.randomUUID();
     this.init();
     this.initHandlers();
     this.initMouseHandlers();
@@ -60,10 +63,19 @@ export class Game {
   setTool(tool: ToolShape) {
     this.isActiveTool = tool;
   }
+
   undoLastShape() {
-  this.existingShapes.pop();
-  this.clearCanvas();
-}
+    this.socket.send(
+      JSON.stringify({
+        type: "undo",
+        roomId: this.roomId,
+        clientId: this.clientId,
+      }),
+    );
+    this.existingShapes.pop();
+    this.clearCanvas();
+  }
+
   destroy() {
     this.canvas.removeEventListener("mousedown", this.mouseDownHandler);
     this.canvas.removeEventListener("mouseup", this.mouseUpHandler);
@@ -72,6 +84,8 @@ export class Game {
 
   async init() {
     this.existingShapes = await getExistingShapes(this.roomId);
+    console.log("init shapes",this.existingShapes)
+
     this.clearCanvas();
   }
 
@@ -80,8 +94,17 @@ export class Game {
       const message = JSON.parse(event.data);
 
       if (message.type === "chat") {
+        if (message.clientId === this.clientId) {
+          return;
+        }
         const parsedShape = JSON.parse(message.message);
         this.existingShapes.push(parsedShape.shape);
+        console.log("socket shape", parsedShape.shape);
+        this.clearCanvas();
+      }
+
+      if (message.type === "undo") {
+        this.existingShapes.pop();
         this.clearCanvas();
       }
     };
@@ -125,20 +148,26 @@ export class Game {
 
         this.ctx.stroke();
       } else if (shape.type === "arrowPoint") {
-        const dx = shape.endX - shape.startX
-        const dy = shape.endY - shape.startY
-        const headLength = 10
-        const angle = Math.atan2(dy,dx)
-        this.ctx.beginPath()
-        this.ctx.moveTo(shape.startX,shape.startY)
-        this.ctx.lineTo(shape.endX,shape.endY)
-        this.ctx.stroke()
-        this.ctx.beginPath()
-        this.ctx.moveTo(shape.endX- headLength * Math.cos( angle - Math.PI / 6), shape.endY - headLength * Math.sin(angle - Math.PI / 6))
-        this.ctx.lineTo(shape.endX,shape.endY)
-        this.ctx.lineTo(shape.endX- headLength * Math.cos( angle + Math.PI / 6), shape.endY - headLength * Math.sin(angle + Math.PI / 6))
-        this.ctx.stroke()
-        this.ctx.closePath()
+        const dx = shape.endX - shape.startX;
+        const dy = shape.endY - shape.startY;
+        const headLength = 10;
+        const angle = Math.atan2(dy, dx);
+        this.ctx.beginPath();
+        this.ctx.moveTo(shape.startX, shape.startY);
+        this.ctx.lineTo(shape.endX, shape.endY);
+        this.ctx.stroke();
+        this.ctx.beginPath();
+        this.ctx.moveTo(
+          shape.endX - headLength * Math.cos(angle - Math.PI / 6),
+          shape.endY - headLength * Math.sin(angle - Math.PI / 6),
+        );
+        this.ctx.lineTo(shape.endX, shape.endY);
+        this.ctx.lineTo(
+          shape.endX - headLength * Math.cos(angle + Math.PI / 6),
+          shape.endY - headLength * Math.sin(angle + Math.PI / 6),
+        );
+        this.ctx.stroke();
+        this.ctx.closePath();
       }
     });
   }
@@ -151,7 +180,7 @@ export class Game {
 
     this.startX = x;
     this.startY = y;
-    this.points = [{x: e.clientX, y: e.clientY}]
+    this.points = [{ x: e.clientX, y: e.clientY }];
   };
   mouseUpHandler = (e: MouseEvent) => {
     this.clicked = false;
@@ -181,25 +210,26 @@ export class Game {
         type: "pencil",
         points: [...this.points],
       };
-    } else if (isActiveTool==="arrowPoint"){
-      const endX = e.clientX 
-      const endY = e.clientY
+    } else if (isActiveTool === "arrowPoint") {
+      const endX = e.clientX;
+      const endY = e.clientY;
       shape = {
-        type:"arrowPoint",
-        startX:this.startX,
-        startY:this.startY,
-        endX:endX,
-        endY:endY
-      }
+        type: "arrowPoint",
+        startX: this.startX,
+        startY: this.startY,
+        endX: endX,
+        endY: endY,
+      };
     }
     if (!shape) {
       return;
-    } 
+    }
     this.existingShapes.push(shape);
 
     this.socket.send(
       JSON.stringify({
         type: "chat",
+        clientId: this.clientId,
         message: JSON.stringify({
           shape,
         }),
@@ -228,7 +258,7 @@ export class Game {
         const points = { x: e.clientX, y: e.clientY };
         this.points.push(points);
         this.ctx.beginPath();
-        this.ctx.moveTo(this.points[0].x, this.points[0].y)
+        this.ctx.moveTo(this.points[0].x, this.points[0].y);
 
         for (let i = 1; i < this.points.length - 1; i++) {
           const midX = (this.points[i].x + this.points[i + 1].x) / 2;
@@ -241,24 +271,30 @@ export class Game {
           );
           this.ctx.lineWidth = 2;
         }
-        this.ctx.stroke(); 
-      } else if (isActiveTool === "arrowPoint"){
-        const endX =  e.clientX 
-        const endY =  e.clientY
-        const dx = endX - this.startX
-        const dy = endY - this.startY
-        const headLength = 10
-        const angle = Math.atan2(dy,dx)
-        this.ctx.beginPath()
-        this.ctx.moveTo(this.startX,this.startY)
-        this.ctx.lineTo(endX,endY)
-        this.ctx.stroke()
-        this.ctx.beginPath()
-        this.ctx.moveTo(endX- headLength * Math.cos( angle - Math.PI / 6), endY - headLength * Math.sin(angle - Math.PI / 6))
-        this.ctx.lineTo(endX,endY)
-        this.ctx.lineTo(endX- headLength * Math.cos( angle + Math.PI / 6), endY - headLength * Math.sin(angle + Math.PI / 6))
-        this.ctx.stroke()
-        this.ctx.closePath()
+        this.ctx.stroke();
+      } else if (isActiveTool === "arrowPoint") {
+        const endX = e.clientX;
+        const endY = e.clientY;
+        const dx = endX - this.startX;
+        const dy = endY - this.startY;
+        const headLength = 10;
+        const angle = Math.atan2(dy, dx);
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.startX, this.startY);
+        this.ctx.lineTo(endX, endY);
+        this.ctx.stroke();
+        this.ctx.beginPath();
+        this.ctx.moveTo(
+          endX - headLength * Math.cos(angle - Math.PI / 6),
+          endY - headLength * Math.sin(angle - Math.PI / 6),
+        );
+        this.ctx.lineTo(endX, endY);
+        this.ctx.lineTo(
+          endX - headLength * Math.cos(angle + Math.PI / 6),
+          endY - headLength * Math.sin(angle + Math.PI / 6),
+        );
+        this.ctx.stroke();
+        this.ctx.closePath();
       }
     }
   };
