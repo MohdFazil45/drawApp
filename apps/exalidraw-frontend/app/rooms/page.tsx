@@ -147,7 +147,7 @@ export default function RoomCreate() {
                                 variant="secondary"
                                 type="submit"
                               >
-                                {create ? "Creating" : "Create room"}
+                                {create ? "Creating..." : "Create room"}
                               </Button>
                             </div>
                           </div>
