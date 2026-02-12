@@ -27,6 +27,7 @@ export default function RoomCreate() {
   >([]);
   const [isLoading, setIsLoading] = useState(true);
   const [create, setCreate] = useState(false);
+  
   const route = useRouter();
 
   useEffect(() => {
@@ -83,7 +84,7 @@ export default function RoomCreate() {
   const enterRoom = async (slug: string) => {
     console.log(slug);
     const roomId = await getRoomId(slug);
-    console.log(roomId);
+    
     route.push(`/canvas/${roomId}`);
   };
 

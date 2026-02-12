@@ -1,20 +1,28 @@
+"use client"
 import * as htmlToImage from "html-to-image";
-import { toPng } from "html-to-image";
 import { useEffect, useRef, useState } from "react";
 import { IconButton } from "./IconButton";
 import {
+  ArrowUpLeft,
   Circle,
-  LineSquiggleIcon,
   MousePointer,
   Pencil,
   RectangleHorizontal,
   Text,
+  Undo,
   X,
 } from "lucide-react";
 import { Game } from "@/draw/Game";
 import { Side } from "./SideBar";
+import axios from "axios";
 
-export type ToolShape = "mouse" | "circle" | "rect" | "pencil" | "curveline";
+export type ToolShape =
+  | "mouse"
+  | "circle"
+  | "rect"
+  | "pencil"
+  | "arrowPoint"
+  | "undo";
 
 export function Canvas({
   roomId,
@@ -31,7 +39,7 @@ export function Canvas({
 
   function showSideBar() {
     sidebarRef.current?.classList.toggle("flex");
-    setShowsideButton(prev=> !prev);
+    setShowsideButton((prev) => !prev);
     sidebarRef.current?.classList.toggle("hidden");
   }
 
@@ -42,7 +50,7 @@ export function Canvas({
     const dataUrl = await htmlToImage.toPng(canvasRef.current);
     const link = document.createElement("a");
     link.href = dataUrl;
-    link.download = "diagram.png";
+    link.download = "canva.png";
     link.click();
   }
 
@@ -68,17 +76,22 @@ export function Canvas({
         height={window.innerHeight}
         width={window.innerWidth}
       ></canvas>
-      <TopBar isActiveTool={isActiveTool} setIsActiveTool={setIsActiveTool} />
-      <div className="absolute top-3 right-5 ">
+      <TopBar
+        isActiveTool={isActiveTool}
+        setIsActiveTool={setIsActiveTool}
+        roomId={roomId}
+        game={game}
+      />
+      <div className="absolute top-3 right-5">
         {showsideButton ? (
           <Text
-            className="fixed z-100 right-5 top-3 cursor-pointer transition-all duration-500"
+            className="fixed top-3 right-5 z-100 cursor-pointer transition-all duration-500"
             onClick={showSideBar}
             size={"30px"}
           />
         ) : (
           <X
-            className="fixed z-100 right-5 top-3 cursor-pointer transition-all duration-500"
+            className="fixed top-3 right-5 z-100 cursor-pointer transition-all duration-500"
             onClick={showSideBar}
             size={"30px"}
           />
@@ -94,12 +107,33 @@ export function Canvas({
 function TopBar({
   isActiveTool,
   setIsActiveTool,
+  roomId,
+  game
 }: {
   isActiveTool: ToolShape;
   setIsActiveTool: (s: ToolShape) => void;
+  roomId: number;
+  game?:Game
 }) {
+  const token = localStorage.getItem("token");
+  const undoMessage = async () => {
+    try {
+      const response = await axios.delete(
+        `${process.env.NEXT_PUBLIC_HTTP_BACKEND_URL}/undo/${roomId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      if (response.status === 200 && game) {
+        game.undoLastShape()
+      }
+    } catch (error) {}
+  };
+
   return (
-    <div className="fixed top-3 left-140 flex gap-2 border-2 border-cyan-500/60 px-4 py-2 rounded-lg ">
+    <div className="fixed top-3 left-140 flex gap-2 rounded-lg border-2 border-cyan-500/60 px-4 py-2">
       <IconButton
         activated={isActiveTool === "mouse"}
         icon={<MousePointer />}
@@ -108,10 +142,10 @@ function TopBar({
         }}
       />
       <IconButton
-        activated={isActiveTool === "curveline"}
-        icon={<LineSquiggleIcon />}
+        activated={isActiveTool === "arrowPoint"}
+        icon={<ArrowUpLeft />}
         onClick={() => {
-          setIsActiveTool("curveline");
+          setIsActiveTool("arrowPoint");
         }}
       />
       <IconButton
@@ -134,6 +168,11 @@ function TopBar({
         onClick={() => {
           setIsActiveTool("rect");
         }}
+      />
+      <IconButton
+        activated={isActiveTool === "undo"}
+        icon={<Undo className="cursor-pointer"/>}
+        onClick={undoMessage}
       />
     </div>
   );

@@ -169,18 +169,18 @@ app.get("/api/v1/room", middleware, async (req, res) => {
 app.delete("/api/v1/room/:id", middleware, async (req, res) => {
   const roomId = Number(req.params.id);
   //@ts-ignore
-  const userId = req.userId
+  const userId = req.userId;
 
   await prisma.chat.deleteMany({
-    where:{
-      roomId:roomId
-    }
-  })
+    where: {
+      roomId: roomId,
+    },
+  });
 
   await prisma.room.delete({
     where: {
-      adminId:userId,
-      id: roomId
+      adminId: userId,
+      id: roomId,
     },
   });
 
@@ -189,8 +189,54 @@ app.delete("/api/v1/room/:id", middleware, async (req, res) => {
   });
 });
 
+app.delete("/api/v1/undo/:roomId", middleware, async (req, res) => {
+  try {
+    //@ts-ignore
+    const userId = req.userId;
+    console.log("here");
+    const roomId = Number(req.params["roomId"]);
+    console.log(roomId);
+    if (!roomId) {
+      return res.status(404).json({
+        error: "RoomId doesn't exist",
+      });
+    }
+    console.log("first");
+    const lastChat = await prisma.chat.findFirst({
+      where: {
+        roomId: roomId,
+        userId: userId,
+      },
+      orderBy: {
+        id: "desc",
+      },
+    });
+
+    if (!lastChat) {
+      return res.status(404).json({
+        error: "Chat doesn't exist",
+      });
+    }
+
+    await prisma.chat.delete({
+      where: {
+        id: lastChat.id,
+      },
+    });
+
+    return res.status(200).json({
+      message: "Message Deleted succesfully",
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 app.get("/api/v1/chats/:roomId", async (req, res) => {
   try {
+    console.log("params:", req.params);
+    console.log("roomId raw:", req.params.roomId);
+
     const roomId = Number(req.params["roomId"]);
     const messages = await prisma.chat.findMany({
       where: {
