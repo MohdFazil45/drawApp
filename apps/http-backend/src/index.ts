@@ -229,6 +229,26 @@ app.delete("/api/v1/undo/:roomId", middleware, async (req, res) => {
   }
 });
 
+app.delete("/api/v1/chats/delete/:roomId",async (req,res) => {
+  const roomId = Number(req.params.roomId)
+
+  if (!roomId) {
+    return res.status(404).json({
+      error:"RoomId doesn't exist"
+    })
+  }
+
+  await prisma.chat.deleteMany({
+    where:{
+      roomId:roomId
+    }
+  })
+
+  res.status(200).json({
+    message:"All chats deleted"
+  })
+})
+
 app.get("/api/v1/chats/:roomId", async (req, res) => {
   try {
     const roomId = Number(req.params["roomId"]);

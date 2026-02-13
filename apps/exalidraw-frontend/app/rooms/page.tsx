@@ -150,6 +150,13 @@ export default function RoomCreate() {
                               >
                                 {create ? "Creating..." : "Create room"}
                               </Button>
+                              <Button
+                              variant="secondary"
+                              size="sm"
+                              onClick={() => enterRoom(field.state.value)}
+                            >
+                              Join
+                            </Button>
                             </div>
                           </div>
                         )}

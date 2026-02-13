@@ -76,6 +76,18 @@ export class Game {
     this.clearCanvas();
   }
 
+  deleteShape() {
+    this.socket.send(
+      JSON.stringify({
+        type: "delete",
+        roomId: this.roomId,
+        clientId: this.clientId,
+      }),
+    );
+    this.existingShapes.splice(0, this.existingShapes.length);
+    this.clearCanvas();
+  }
+
   destroy() {
     this.canvas.removeEventListener("mousedown", this.mouseDownHandler);
     this.canvas.removeEventListener("mouseup", this.mouseUpHandler);
@@ -106,6 +118,11 @@ export class Game {
       if (message.type === "undo") {
         this.existingShapes.pop();
         this.clearCanvas();
+      }
+
+      if (message.type === "delete") {
+        this.existingShapes.splice(0,this.existingShapes.length)
+        this.clearCanvas()
       }
     };
   }

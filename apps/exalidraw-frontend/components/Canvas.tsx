@@ -9,6 +9,7 @@ import {
   Pencil,
   RectangleHorizontal,
   Text,
+  Trash2,
   Undo,
   X,
 } from "lucide-react";
@@ -135,8 +136,22 @@ function TopBar({
           },
         },
       );
-      if (response.status === 200 && game) {
+    } catch (error) {}
+  };
+
+  const deleteAllMessage = async () => {
+    try {
+      if (game) {
+        game.deleteShape();
       }
+      const response = await axios.delete(
+        `${process.env.NEXT_PUBLIC_HTTP_BACKEND_URL}/delete/${roomId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
     } catch (error) {}
   };
 
@@ -181,6 +196,11 @@ function TopBar({
         activated={isActiveTool === "undo"}
         icon={<Undo className="cursor-pointer" />}
         onClick={undoMessage}
+      />
+      <IconButton
+        activated={isActiveTool === "undo"}
+        icon={<Trash2 className="cursor-pointer" />}
+        onClick={deleteAllMessage}
       />
     </div>
   );

@@ -121,6 +121,24 @@ wss.on("connection", function connection(ws, request) {
         }
       });
     }
+
+    if (parsedData.type === "delete") {
+      const roomId = Number(parsedData.roomId);
+      const clientId = parsedData.clientId;
+
+      // Broadcast undo to other users in room
+      users.forEach((user) => {
+        if (user.rooms.includes(roomId) && user.ws !== ws) {
+          user.ws.send(
+            JSON.stringify({
+              type: "delete",
+              roomId,
+              clientId,
+            }),
+          );
+        }
+      });
+    }
   });
 });
 
