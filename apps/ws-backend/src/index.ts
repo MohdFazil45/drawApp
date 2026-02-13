@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { SECRET_TOKEN } from "@repo/backendcommon/secret";
 import { WebSocket } from "ws";
 const wss = new WebSocketServer({ port: 8080 });
-import {prisma} from "@repo/db/client"
+import { prisma } from "@repo/db/client";
 
 interface User {
   ws: WebSocket;
@@ -30,7 +30,7 @@ function checkUser(token: string): string | null {
   }
 }
 
-wss.on("connection",function connection(ws, request) {
+wss.on("connection", function connection(ws, request) {
   const url = request.url;
   if (!url) {
     return;
@@ -56,9 +56,9 @@ wss.on("connection",function connection(ws, request) {
     let parsedData;
 
     if (typeof data !== "string") {
-      parsedData = JSON.parse(data.toString())
+      parsedData = JSON.parse(data.toString());
     } else {
-      parsedData = JSON.parse(data)
+      parsedData = JSON.parse(data);
     }
 
     if (parsedData.type === "join_room") {
@@ -68,7 +68,7 @@ wss.on("connection",function connection(ws, request) {
 
     if (parsedData.type === "leave_room") {
       const user = users.find((x) => x.ws === ws);
-      console.log(parsedData)
+      console.log(parsedData);
       if (!user) {
         return;
       }
@@ -78,25 +78,44 @@ wss.on("connection",function connection(ws, request) {
     if (parsedData.type === "chat") {
       const roomId = Number(parsedData.roomId);
       const message = parsedData.message;
-    
-     try {
-       await prisma.chat.create({
-        data:{
-            roomId:Number(roomId),
+      const clientId = parsedData.clientId;
+
+      try {
+        await prisma.chat.create({
+          data: {
+            roomId: Number(roomId),
             message,
-            userId
-        }
-      })
-     } catch (error:any) {
-      console.log(error.message)
-     }
+            userId,
+          },
+        });
+      } catch (error: any) {
+        console.log(error.message);
+      }
       users.forEach((user) => {
         if (user.rooms.includes(roomId)) {
           user.ws.send(
             JSON.stringify({
               type: "chat",
-              message:message,
+              message: message,
               roomId,
+              clientId,
+            }),
+          );
+        }
+      });
+    }
+    if (parsedData.type === "undo") {
+      const roomId = Number(parsedData.roomId);
+      const clientId = parsedData.clientId;
+
+      // Broadcast undo to other users in room
+      users.forEach((user) => {
+        if (user.rooms.includes(roomId) && user.ws !== ws) {
+          user.ws.send(
+            JSON.stringify({
+              type: "undo",
+              roomId,
+              clientId,
             }),
           );
         }
