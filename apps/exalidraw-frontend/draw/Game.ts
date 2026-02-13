@@ -140,7 +140,8 @@ export class Game {
     this.canvas.removeEventListener("mousedown", this.mouseDownHandler);
     this.canvas.removeEventListener("mouseup", this.mouseUpHandler);
     this.canvas.removeEventListener("mousemove", this.mouseMoveHandler);
-    window.removeEventListener("keydown", this.keyDownHandler);
+    window.removeEventListener("keydown", this.keyDownUndoHandler);
+    window.removeEventListener("keydown", this.keyDownRedoHandler);
   }
 
   async init() {
@@ -252,7 +253,7 @@ export class Game {
     });
   }
 
-  keyDownHandler = (e: KeyboardEvent) => {
+  keyDownUndoHandler = (e: KeyboardEvent) => {
     const isUndo = (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z";
 
     if (isUndo) {
@@ -260,7 +261,16 @@ export class Game {
       this.undoLastShape();
     }
   };
+  
+  keyDownRedoHandler = (e: KeyboardEvent) => {
+    const isUndo = (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "y";
 
+    if (isUndo) {
+      e.preventDefault(); // prevent browser undo
+      this.redoLastShape();
+    }
+  };
+  
   mouseDownHandler = (e: MouseEvent) => {
     this.clicked = true;
 
@@ -394,6 +404,7 @@ export class Game {
     this.canvas.addEventListener("mousemove", this.mouseMoveHandler);
   }
   initKeyboardHandlers() {
-    window.addEventListener("keydown", this.keyDownHandler);
+    window.addEventListener("keydown", this.keyDownUndoHandler);
+    window.addEventListener("keydown",this.keyDownRedoHandler)
   }
 }

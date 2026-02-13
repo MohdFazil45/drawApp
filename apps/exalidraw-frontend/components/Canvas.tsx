@@ -78,6 +78,14 @@ useEffect(() => {
   };
 }, [roomId, socket]);
 
+  const keyDownExportHandler =  (e:KeyboardEvent)=>{
+    const isExport = (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s"
+
+    if (isExport) {
+      exportCanvas()
+    }
+  }
+
 
   return (
     <div className="h-screen overflow-hidden">
