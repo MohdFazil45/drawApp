@@ -27,7 +27,7 @@ export default function RoomCreate() {
   >([]);
   const [isLoading, setIsLoading] = useState(true);
   const [create, setCreate] = useState(false);
-  
+
   const route = useRouter();
 
   useEffect(() => {
@@ -84,7 +84,7 @@ export default function RoomCreate() {
   const enterRoom = async (slug: string) => {
     console.log(slug);
     const roomId = await getRoomId(slug);
-    
+
     route.push(`/canvas/${roomId}`);
   };
 
@@ -112,8 +112,8 @@ export default function RoomCreate() {
         <div className="mt-8 flex min-h-screen items-center justify-center gap-10 p-4 dark:bg-transparent">
           <div className="flex min-h-screen w-screen flex-col gap-4">
             <div className="flex items-center justify-center">
-              <div className="h-fit w-[80%] overflow-hidden rounded-2xl border-2 dark:border-cyan-500/40 border-neutral-400 dark:bg-transparent bg-neutral-300/20">
-                <div className="flex h-full w-full items-center gap-1 border dark:border-cyan-500/40 border-neutral-400 p-2 dark:bg-transparent">
+              <div className="h-fit w-[80%] overflow-hidden rounded-2xl border-2 border-neutral-400 bg-neutral-300/20 dark:border-cyan-500/40 dark:bg-transparent">
+                <div className="flex h-full w-full items-center gap-1 border border-neutral-400 p-2 dark:border-cyan-500/40 dark:bg-transparent">
                   <Plus size={"30px"} />
                   <h1 className="text-3xl">Create new room</h1>
                 </div>
@@ -151,12 +151,12 @@ export default function RoomCreate() {
                                 {create ? "Creating..." : "Create room"}
                               </Button>
                               <Button
-                              variant="secondary"
-                              size="sm"
-                              onClick={() => enterRoom(field.state.value)}
-                            >
-                              Join
-                            </Button>
+                                variant="secondary"
+                                size="sm"
+                                onClick={() => enterRoom(field.state.value)}
+                              >
+                                Join
+                              </Button>
                             </div>
                           </div>
                         )}
@@ -171,8 +171,8 @@ export default function RoomCreate() {
               </div>
             </div>
             <div className="flex items-center justify-center">
-              <div className="min-h-screen w-[70%] rounded-xl border-2 dark:border-cyan-500/40 border-neutral-400 dark:bg-transparent bg-neutral-300/20">
-                <div className="rounded-t-xl border dark:border-cyan-500/40 border-neutral-400 p-4 text-3xl">
+              <div className="min-h-screen w-[70%] rounded-xl border-2 border-neutral-400 bg-neutral-300/20 dark:border-cyan-500/40 dark:bg-transparent">
+                <div className="rounded-t-xl border border-neutral-400 p-4 text-3xl dark:border-cyan-500/40">
                   Rooms
                 </div>
                 <div>

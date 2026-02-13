@@ -107,14 +107,15 @@ wss.on("connection", function connection(ws, request) {
     if (parsedData.type === "undo") {
       const roomId = Number(parsedData.roomId);
       const clientId = parsedData.clientId;
+      const shape = parsedData.shape
 
-      // Broadcast undo to other users in room
       users.forEach((user) => {
         if (user.rooms.includes(roomId) && user.ws !== ws) {
           user.ws.send(
             JSON.stringify({
               type: "undo",
               roomId,
+              shape,
               clientId,
             }),
           );
@@ -122,11 +123,30 @@ wss.on("connection", function connection(ws, request) {
       });
     }
 
+    if (parsedData.type === "redo") {
+      const roomId = Number(parsedData.roomId)
+      const clientId = parsedData.clientId
+      const shape = parsedData.shape
+
+
+      users.forEach((user)=>{
+        if (user.rooms.includes(roomId) &&  user.ws !==ws) {
+            user.ws.send(
+              JSON.stringify({
+                type:"redo",
+                roomId,
+                shape,
+                clientId
+              })
+            )
+        }
+      })
+    }
+
     if (parsedData.type === "delete") {
       const roomId = Number(parsedData.roomId);
       const clientId = parsedData.clientId;
 
-      // Broadcast undo to other users in room
       users.forEach((user) => {
         if (user.rooms.includes(roomId) && user.ws !== ws) {
           user.ws.send(

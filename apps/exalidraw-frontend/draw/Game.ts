@@ -44,6 +44,8 @@ export class Game {
   private clientId: string;
   private isActiveTool: ToolShape = "rect";
   private points: Point[];
+  private undoStore: Shape[] = [];
+  private redoStore: Shape[] = [];
 
   constructor(canvas: HTMLCanvasElement, roomId: number, socket: WebSocket) {
     console.log("Game created");
@@ -58,6 +60,15 @@ export class Game {
     this.init();
     this.initHandlers();
     this.initMouseHandlers();
+    this.initKeyboardHandlers();
+    this.socket.onopen = () => {
+      this.socket.send(
+        JSON.stringify({
+          type: "join_room",
+          roomId: this.roomId,
+        }),
+      );
+    };
   }
 
   setTool(tool: ToolShape) {
@@ -65,18 +76,55 @@ export class Game {
   }
 
   undoLastShape() {
+    if (this.existingShapes.length === 0) {
+      return;
+    }
+    console.log("third");
+    const shape = this.existingShapes.pop();
+    if (!shape) {
+      return;
+    }
+    this.undoStore.push(shape);
+    this.redoStore = [];
+    this.clearCanvas();
+
     this.socket.send(
       JSON.stringify({
         type: "undo",
+        shape,
         roomId: this.roomId,
         clientId: this.clientId,
       }),
     );
-    this.existingShapes.pop();
+  }
+
+  redoLastShape() {
+    if (this.undoStore.length === 0) {
+      return;
+    }
+
+    const shape = this.undoStore.pop();
+    if (!shape) {
+      return;
+    }
+    console.log("second");
+    this.existingShapes.push(shape);
     this.clearCanvas();
+
+    this.socket.send(
+      JSON.stringify({
+        type: "redo",
+        shape,
+        roomId: this.roomId,
+        clientId: this.clientId,
+      }),
+    );
   }
 
   deleteShape() {
+    if (this.existingShapes.length === 0) {
+      return;
+    }
     this.socket.send(
       JSON.stringify({
         type: "delete",
@@ -92,12 +140,11 @@ export class Game {
     this.canvas.removeEventListener("mousedown", this.mouseDownHandler);
     this.canvas.removeEventListener("mouseup", this.mouseUpHandler);
     this.canvas.removeEventListener("mousemove", this.mouseMoveHandler);
+    window.removeEventListener("keydown", this.keyDownHandler);
   }
 
   async init() {
     this.existingShapes = await getExistingShapes(this.roomId);
-    console.log("init shapes",this.existingShapes)
-
     this.clearCanvas();
   }
 
@@ -116,13 +163,29 @@ export class Game {
       }
 
       if (message.type === "undo") {
-        this.existingShapes.pop();
+        if (message.clientId === this.clientId) return;
+
+        const index = this.existingShapes.findIndex(
+          (s) => JSON.stringify(s) === JSON.stringify(message.shape),
+        );
+
+        if (index !== -1) {
+          const [removed] = this.existingShapes.splice(index, 1);
+          this.undoStore.push(removed);
+          this.clearCanvas();
+        }
+      }
+
+      if (message.type === "redo") {
+        if (message.clientId === this.clientId) return;
+
+        this.existingShapes.push(message.shape);
         this.clearCanvas();
       }
 
       if (message.type === "delete") {
-        this.existingShapes.splice(0,this.existingShapes.length)
-        this.clearCanvas()
+        this.existingShapes.splice(0, this.existingShapes.length);
+        this.clearCanvas();
       }
     };
   }
@@ -188,6 +251,15 @@ export class Game {
       }
     });
   }
+
+  keyDownHandler = (e: KeyboardEvent) => {
+    const isUndo = (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z";
+
+    if (isUndo) {
+      e.preventDefault(); // prevent browser undo
+      this.undoLastShape();
+    }
+  };
 
   mouseDownHandler = (e: MouseEvent) => {
     this.clicked = true;
@@ -320,5 +392,8 @@ export class Game {
     this.canvas.addEventListener("mousedown", this.mouseDownHandler);
     this.canvas.addEventListener("mouseup", this.mouseUpHandler);
     this.canvas.addEventListener("mousemove", this.mouseMoveHandler);
+  }
+  initKeyboardHandlers() {
+    window.addEventListener("keydown", this.keyDownHandler);
   }
 }
