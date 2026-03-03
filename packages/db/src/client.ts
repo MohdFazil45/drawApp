@@ -1,5 +1,5 @@
 export { Prisma } from "./generated/prisma/client"; // exports instance of prisma
-export * from "./generated/prisma/client.js"; // exports generated types from prisma
+export * from "./generated/prisma/client"; // exports generated types from prisma
 import dotenv from 'dotenv';
 import path from 'path';
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
