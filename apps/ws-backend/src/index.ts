@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { SECRET_TOKEN } from "@repo/backendcommon/secret";
 import { WebSocket } from "ws";
 const wss = new WebSocketServer({ port: 4000 });
-import { prisma } from "@repo/db/client.ts";
+import { prisma } from "@repo/db/client";
 
 interface User {
   ws: WebSocket;
