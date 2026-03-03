@@ -3,8 +3,8 @@ import jwt from "jsonwebtoken";
 import { prisma } from "@repo/db/client";
 import { SECRET_TOKEN } from "@repo/backendcommon/secret";
 import { WebSocket } from "ws";
-const port = process.env.PORT
-const wss = new WebSocketServer({ port || 4000 });
+
+const wss = new WebSocketServer({port:8080});
 
 interface User {
   ws: WebSocket;
