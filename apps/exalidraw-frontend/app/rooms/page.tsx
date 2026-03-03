@@ -109,16 +109,16 @@ export default function RoomCreate() {
       <div className="min-h-screen w-full overflow-x-hidden bg-white bg-[radial-gradient(#D3D3D3_1px,transparent_1px)] bg-size-[10px_10px] dark:bg-black dark:bg-[radial-gradient(#ffffff20_1px,transparent_1px)]">
         <NavBar />
 
-        <div className="mt-8 flex min-h-screen items-center justify-center gap-10 p-4 dark:bg-transparent">
-          <div className="flex min-h-screen w-screen flex-col gap-4">
+        <div className="xs:mt-12 xl:mt-8 flex min-h-screen items-center justify-center xl:gap-10 xl:p-4 dark:bg-transparent">
+          <div className="flex min-h-screen w-screen flex-col xl:gap-4">
             <div className="flex items-center justify-center">
               <div className="h-fit w-[80%] overflow-hidden rounded-2xl border-2 border-neutral-400 bg-neutral-300/20 dark:border-cyan-500/40 dark:bg-transparent">
-                <div className="flex h-full w-full items-center gap-1 border border-neutral-400 p-2 dark:border-cyan-500/40 dark:bg-transparent">
-                  <Plus size={"30px"} />
-                  <h1 className="text-3xl">Create new room</h1>
+                <div className="flex h-full w-full items-center xl:gap-1 border border-neutral-400  xs:p-2 xl:p-2 dark:border-cyan-500/40 dark:bg-transparent">
+                  <Plus/>
+                  <h1 className="xs:text-sm xl:text-3xl">Create new room</h1>
                 </div>
                 <div className="flex flex-col items-center justify-center">
-                  <div className="mt-4 flex flex-col items-center justify-center">
+                  <div className="xl:mt-4 xs:mt-2 xs:p-2 flex flex-col items-center justify-center">
                     <form
                       onSubmit={(e) => {
                         e.preventDefault();
@@ -142,7 +142,7 @@ export default function RoomCreate() {
                               />
                             </div>
 
-                            <div className="flex items-center justify-center gap-3">
+                            <div className="flex items-center justify-center xs:gap-2 xl:gap-3">
                               <Button
                                 size="sm"
                                 variant="secondary"
@@ -163,7 +163,7 @@ export default function RoomCreate() {
                       </form.Field>
                     </form>
                   </div>
-                  <div className="my-2 text-lg dark:text-cyan-500">
+                  <div className="xl:my-2 xs:text-sm xs:px-4 xs:p-2 xl:text-lg dark:text-cyan-500">
                     Create your room canvas room by generating room code and
                     paste it input.
                   </div>
@@ -171,12 +171,12 @@ export default function RoomCreate() {
               </div>
             </div>
             <div className="flex items-center justify-center">
-              <div className="min-h-screen w-[70%] rounded-xl border-2 border-neutral-400 bg-neutral-300/20 dark:border-cyan-500/40 dark:bg-transparent">
-                <div className="rounded-t-xl border border-neutral-400 p-4 text-3xl dark:border-cyan-500/40">
+              <div className="min-h-fit w-[70%] rounded-xl border-2 border-neutral-400 bg-neutral-300/20 dark:border-cyan-500/40 dark:bg-transparent xs:mt-4">
+                <div className="rounded-t-xl border border-neutral-400 xs:p-2 xl:p-4 xl:text-3xl dark:border-cyan-500/40">
                   Rooms
                 </div>
                 <div>
-                  <div className="flex h-full w-full flex-col items-center gap-2 p-4">
+                  <div className="flex h-full  w-full flex-col items-center xl:gap-2 xl:p-4">
                     {isLoading ? (
                       <div className="flex h-full w-full items-center justify-center">
                         <Loader
@@ -187,18 +187,18 @@ export default function RoomCreate() {
                         />
                       </div>
                     ) : roomCreated.length == 0 ? (
-                      <div className="flex items-center justify-center text-2xl">
+                      <div className="flex items-center justify-center xs:text-xl xl:text-2xl">
                         There is no rooms created yet{" "}
                       </div>
                     ) : (
                       roomCreated.map((room) => (
                         <div
                           key={room.id}
-                          className="flex items-center gap-24 rounded-2xl border border-neutral-400 px-4 py-2"
+                          className="flex items-center xs:gap-4 xl:gap-24 rounded-2xl border border-neutral-400 xl:px-4 xl:py-2 xs:p-2 my-2"
                         >
                           <div className="flex flex-col">
-                            <div className="text-xl">{room.slug}</div>
-                            <div className="text-xs">
+                            <div className="xs:text-xs xl:text-xl">{room.slug}</div>
+                            <div className="xs:text-[8px] xl:text-xs">
                               Created:{" "}
                               {new Date(room.createdAt).toLocaleString(
                                 "en-IN",

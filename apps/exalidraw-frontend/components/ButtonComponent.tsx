@@ -19,14 +19,14 @@ export const Button = ({
   type
 }: ButtonProps) => {
   const baseStyles =
-    "transition-all duration-300 flex items-center justify-center cursor-pointer rounded-md dark:text-shadow-xs/25 text-shadow-lg";
+    "transition-all duration-300 flex items-center justify-center cursor-pointer  xl:rounded-md rounded-sm dark:text-shadow-xs/25 text-shadow-lg";
   const varientStyle = {
     primary: "text-cyan-500/80  border-cyan-500/80 border-1 hover:bg-neutral-50/10 shadow-xl/20 font-medium hover:text-cyan-700 hover:border-cyan-600  hover:scale-[1.02]",
     secondary: "bg-cyan-500 border-cyan-500  text-white font-bold hover:bg-cyan-500/70 shadow-lg shadow-cyan-500/30  hover:scale-[1.02] inline-flex ",
   };
   const sizeStyles = {
-    sm: "py-2 px-5 text-sm ",
-    lg: "py-3 px-12 text-xl",
+    sm: " py-1 px-3 text-xs xl:py-2 xl:px-4 xl:text-lg",
+    lg: "py-1 px-6 text-lg xl:py-4 xl:px-12 xl:text-2xl",
   };
   return (
     <button

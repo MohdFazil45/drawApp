@@ -1,5 +1,4 @@
 "use client";
-import initDraw from "@/draw";
 import { useEffect, useRef, useState } from "react";
 import { Canvas } from "./Canvas";
 

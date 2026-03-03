@@ -15,11 +15,13 @@ export default function ThemeToggle() {
   return (
     <button
       className="cursor-pointer"
-      onClick={() =>
-        setTheme(theme === "dark" ? "light" : "dark")
-      }
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
     >
-      {theme === "dark" ? <Sun className="text-neutral-400 border-none"/> : <Moon className="text-neutral-600 border-none"/>}
+      {theme === "dark" ? (
+        <Sun className="border-none text-neutral-400" />
+      ) : (
+        <Moon className="border-none text-neutral-600" />
+      )}
     </button>
   );
 }

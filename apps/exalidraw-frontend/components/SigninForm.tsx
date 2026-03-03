@@ -41,9 +41,9 @@ export function FormSignin() {
       <div className="absolute top-5 right-5">
         <ThemeToggle />
       </div>
-      <div className="p-4 m-2 dark:bg-black w-[30vw] h-[36vw] rounded-lg text-white border  dark:border-cyan-400/40 border-neutral-700/50 shadow-lg dark:shadow-cyan-400/20 shadow-neutral-400  flex flex-col items-center justify-center gap-4 backdrop-blur-xl shadow-blur-multi ">
+      <div className="xl:p-4 xl:m-2 dark:bg-black xs:w-[86vw] xs:h-[110vw] md:w-[60vw] md:h-[80vw] xl:w-[30vw] xl:h-[36vw] rounded-lg text-white border  dark:border-cyan-400/40 border-neutral-700/50 shadow-lg dark:shadow-cyan-400/20 shadow-neutral-400  flex flex-col items-center justify-center xl:gap-4 backdrop-blur-xl shadow-blur-multi">
         <div
-          className="text-4xl font-bold text-cyan-400 mt-4 cursor-pointer"
+          className="text-4xl font-bold text-cyan-400 xs:-mt-12 xl:mt-4 cursor-pointer"
           onClick={() => route.push("/")}
         >
           CollabCanvas
@@ -93,12 +93,12 @@ export function FormSignin() {
               </div>
             )}
           />
-          <div className="flex items-center justify-center mt-4">
+          <div className="flex items-center justify-center m-4">
             <Button variant="secondary" size="lg" type="submit">
               Signin
             </Button>
           </div>
-          <div className="dark:text-neutral-500 text-neutral-800 mt-2 flex items-center justify-center ">
+          <div className="dark:text-neutral-500 text-neutral-800 xl:mt-2 flex items-center justify-center ">
             Create new account
             <span onClick={() => route.push("/signup")}>
               <a className="text-cyan-400 cursor-pointer">signup</a>

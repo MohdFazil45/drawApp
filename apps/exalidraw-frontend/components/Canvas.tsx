@@ -8,11 +8,9 @@ import {
   MousePointer,
   Pencil,
   RectangleHorizontal,
-  Redo,
   Redo2,
   Text,
   Trash2,
-  Undo,
   Undo2,
   X,
 } from "lucide-react";
@@ -100,7 +98,7 @@ useEffect(() => {
         roomId={roomId}
         game={game}
       />
-      <div className="absolute top-3 right-5">
+      <div className="absolute top-5 right-5">
         {showsideButton ? (
           <Text
             className="fixed top-3 right-5 z-100 cursor-pointer transition-all duration-500"
@@ -173,7 +171,7 @@ function TopBar({
   };
 
   return (
-    <div className="fixed top-3 left-140 flex gap-2 rounded-lg border-2 border-cyan-500/60 px-4 py-2">
+    <div className="fixed top-25 left-5 flex gap-2 rounded-lg border-2 border-cyan-500/60 p-2 flex-col">
       <IconButton
         activated={isActiveTool === "mouse"}
         icon={<MousePointer />}
