@@ -4,9 +4,7 @@
     "rootDir": "src",
     "outDir": "dist",
     "declaration": true,
-    "paths": {
-      "@repo/db/*": ["../../packages/db/dist/*"]
-    }
+    
   },
   "include": ["src/**/*"],
   "exclude": ["src/generated", "prisma", "dist", "node_modules"]
