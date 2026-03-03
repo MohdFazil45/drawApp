@@ -1,9 +1,10 @@
-import { ErrorEvent, WebSocketServer } from "ws";
+import {  WebSocketServer } from "ws";
 import jwt from "jsonwebtoken";
+import { prisma } from "@repo/db/client";
 import { SECRET_TOKEN } from "@repo/backendcommon/secret";
 import { WebSocket } from "ws";
-const wss = new WebSocketServer({ port: 4000 });
-import { prisma } from "@repo/db/client";
+const port = process.env.PORT
+const wss = new WebSocketServer({ port || 4000 });
 
 interface User {
   ws: WebSocket;
