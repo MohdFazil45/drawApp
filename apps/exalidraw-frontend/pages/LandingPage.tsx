@@ -124,7 +124,7 @@ export default function LandingPage() {
           <div className="xs:gap-2 flex flex-col items-center justify-between sm:gap-2 md:flex-row md:gap-3 xl:flex-row xl:gap-4">
             <div className="flex items-center gap-2">
               <span className="xs:text-sm xs:font-medium font-medium text-neutral-800 sm:text-xl md:text-xl xl:text-3xl dark:text-white">
-                CollabCanvas
+                CanvasCraft
               </span>
             </div>
             <nav className="text-muted-foreground xs:text-xs xs:font-light xs:gap-2 flex items-center sm:gap-6 sm:text-xs md:text-[12px] xl:text-lg">

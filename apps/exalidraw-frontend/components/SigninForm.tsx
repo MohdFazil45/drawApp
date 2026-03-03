@@ -46,7 +46,7 @@ export function FormSignin() {
           className="text-4xl font-bold text-cyan-400 xs:-mt-12 xl:mt-4 cursor-pointer"
           onClick={() => route.push("/")}
         >
-          CollabCanvas
+          CanvasCraft
         </div>
         <form
           onSubmit={(e) => {

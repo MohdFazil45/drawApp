@@ -6,7 +6,13 @@ import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-app.use(cors());
+app.use(cors({
+    origin:[
+        "https://fazil-canvascraft.netlify.app/",
+        "http://localhost:3000"
+    ],
+    credentials:true
+}));
 
 app.use(express.json());
 

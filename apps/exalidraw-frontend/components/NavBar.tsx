@@ -31,7 +31,7 @@ export default function NavBar() {
   return (
     <div className=" mx-auto xl:mt-2 flex items-center justify-between rounded-2xl border border-neutral-500/40 bg-neutral-200/60 px-4 py-3 h-12 w-full xl:h-16 xl:w-7xl dark:border-2 dark:border-cyan-500/30 dark:bg-transparent">
       <div className="font-bold text-black text-shadow-lg text-lg xl:text-2xl dark:text-white">
-        CollabCanvas{" "}
+        CanvasCraft{" "}
       </div>
       <div className="flex xl:gap-4">
         <div className="flex cursor-pointer items-center mr-2 justify-center text-white">
