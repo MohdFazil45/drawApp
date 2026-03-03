@@ -7,6 +7,6 @@
     "composite": true,
     "incremental": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["src/generated", "prisma", "dist", "node_modules"]
+  "include": ["src/**/*","src/generated"],
+  "exclude": [ "prisma", "dist", "node_modules"]
 }
