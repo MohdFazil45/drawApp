@@ -1,12 +1,10 @@
 {
   "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
+    "rootDir": "src",
     "outDir": "dist",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "composite": true,
-    "incremental": true
+    "declaration": true,
   },
-  "include": ["src/**/*","src/generated"],
-  "exclude": [ "prisma", "dist", "node_modules"]
+  "include": ["src/**/*"],
+  "exclude": ["src/generated", "prisma", "dist", "node_modules"]
 }
