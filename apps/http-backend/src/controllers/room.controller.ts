@@ -1,5 +1,5 @@
 import { CreateRoomSchema } from "@repo/common/types";
-import { prisma } from "@repo/db/client";
+import { prisma } from "@repo/db";
 import { Request, Response } from "express";
 
 export const createRoom = async (req:Request,res:Response)=>{
