@@ -22,6 +22,7 @@ export function FormSignup() {
     },
     onSubmit: async ({ value }) => {
       try {
+        console.log("here")
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_HTTP_BACKEND_URL}/signup`,
           {
