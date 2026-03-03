@@ -14,10 +14,6 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "ES2022",
-    "baseUrl": ".",
-    "paths": {
-      "@repo/db/*": ["packages/db/src/*"]
-    }
+    "target": "ES2022"
   }
 }
