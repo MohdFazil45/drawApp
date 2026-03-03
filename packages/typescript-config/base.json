@@ -15,7 +15,7 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "ES2022",
-    "composite":"true",
+    "composite":true,
     "baseUrl": ".",
     "paths": {
       "@repo/db/*": ["packages/db/src/*"]
