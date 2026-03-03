@@ -1,15 +1,12 @@
 import { SECRET_TOKEN } from "@repo/backendcommon/secret";
 import { CreateUserSchema, SigninSchema } from "@repo/common/types";
 import { prisma } from "@repo/db";
-
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken"
-
+import jwt from "jsonwebtoken";
 export const signup = async (req: Request, res: Response) => {
   try {
     const parseData = CreateUserSchema.safeParse(req.body);
-
     if (!parseData.success) {
       return res.status(400).json({
         error: "Incorrect inputs",
