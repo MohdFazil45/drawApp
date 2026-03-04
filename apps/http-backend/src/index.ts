@@ -18,9 +18,9 @@ app.use(
 
 app.use(express.json());
 
-app.use("/api/v1", userRouter);
+app.use("/", userRouter);
 app.use("/health", healthRouter);
-app.use("/api/v1", middleware, roomRouter);
+app.use("/", middleware, roomRouter);
 
 
 app.listen(PORT, () => console.log(`Server is running on ${PORT}`));
