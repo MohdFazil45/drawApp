@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 app.use(
   cors({
-    origin: ["https://fazil-canvascraft.netlify.app/", "http://localhost:3000"],
+    origin: ["https://fazil-canvascraft.netlify.app", "http://localhost:3000"],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
