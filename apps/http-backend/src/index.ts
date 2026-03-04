@@ -1,6 +1,7 @@
 import express from "express";
 import userRouter from "./routes/auth.routes.js";
 import roomRouter from "./routes/room.route.js";
+import healthRouter from "./routes/health.route.js"
 import { middleware } from "./middlewares/authMiddleware.js";
 import cors from "cors";
 
@@ -18,6 +19,7 @@ app.use(
 app.use(express.json());
 
 app.use("/api/v1", userRouter);
+app.use("/health", healthRouter);
 app.use("/api/v1", middleware, roomRouter);
 
 
